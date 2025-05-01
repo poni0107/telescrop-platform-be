@@ -13,4 +13,4 @@
 
 -  __Backend__     -- __Java__
 -  __Frontend__    -- __React.js__
--  __Database__    -- __PostgeSQL__
+-  __Database__    -- __PostgreSQL__
