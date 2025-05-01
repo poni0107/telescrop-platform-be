@@ -1,4 +1,4 @@
-# Online platform for managing telescope and astronomy equipment reservations
+# Online Platform for Managing Telescope and Astronomy Equipment Reservations
 
 ## Team members
 
