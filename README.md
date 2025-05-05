@@ -6,7 +6,7 @@
 -  __Petar Milojević__   -- 
 -  __Sava Đurić__  -- 
 -  __Димитрије Марковић__  -- 
--  __Jovan Obradović__  -- 
+-  __Jovan Obradović__  -- __Frontend__
 
 ## Tech Stack
   The website was made using the following technologies:
