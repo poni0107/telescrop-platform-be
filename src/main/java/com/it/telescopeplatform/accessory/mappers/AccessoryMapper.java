@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.it.telescopeplatform.accessory.dtos.AccessoryResponseDto;
 import com.it.telescopeplatform.accessory.models.Accessory;
-import com.it.telescopeplatform.image.models.Image;
+import com.it.telescopeplatform.image.dtos.ImageResponseDto;
+import com.it.telescopeplatform.review.dtos.ReviewResponseDto;
 import com.it.telescopeplatform.review.models.Review;
 
 @Component
@@ -17,11 +18,28 @@ public class AccessoryMapper {
                         return null;
                 }
 
-                List<String> imageUrls = accessory.getImages() != null
-                                ? accessory.getImages().stream()
-                                                .map(Image::getImageUrl)
-                                                .collect(Collectors.toList())
-                                : List.of();
+                List<ImageResponseDto> imageDtos = accessory.getImages() == null
+                                ? List.of()
+                                : accessory.getImages().stream()
+                                .map(img -> ImageResponseDto.builder()
+                                        .id(img.getId())
+                                        .url(img.getImageUrl())
+                                        .build())
+                                        .collect(Collectors.toList());
+
+                List<ReviewResponseDto> reviewDtos = accessory.getReviews() == null
+                                ? List.of()
+                                : accessory.getReviews().stream()
+                                        .map(r -> ReviewResponseDto.builder()
+                                        .id(r.getId())
+                                        .reviewText(r.getReviewText())
+                                        .rating(r.getRating())
+                                        .userId(r.getUser().getId())
+                                        .userFullName(r.getUser().getFullName())
+                                        .username(r.getUser().getUsername())
+                                        .userEmail(r.getUser().getEmail())
+                                        .build())
+                                        .collect(Collectors.toList());
 
                 var avgRating = accessory.getReviews() != null && !accessory.getReviews().isEmpty()
                                 ? accessory.getReviews().stream()
@@ -37,11 +55,12 @@ public class AccessoryMapper {
                                 .category(accessory.getCategory())
                                 .price(accessory.getPrice())
                                 .stockQuantity(accessory.getStockQuantity())
-                                .imageUrls(imageUrls)
-                                .publisherName(accessory.getPublisher() != null ? accessory.getPublisher().getName()
+                                .images(imageDtos)
+                                .publisherId(accessory.getPublisher() != null ? accessory.getPublisher().getId()
                                                 : null)
                                 .averageRating(avgRating)
                                 .createdAt(accessory.getCreatedAt())
+                                .reviews(reviewDtos)
                                 .build();
         }
 

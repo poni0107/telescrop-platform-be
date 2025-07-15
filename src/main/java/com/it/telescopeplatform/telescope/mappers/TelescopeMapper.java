@@ -3,7 +3,8 @@ package com.it.telescopeplatform.telescope.mappers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.it.telescopeplatform.image.models.Image;
+import com.it.telescopeplatform.image.dtos.ImageResponseDto;
+import com.it.telescopeplatform.review.dtos.ReviewResponseDto;
 import com.it.telescopeplatform.review.models.Review;
 import com.it.telescopeplatform.telescope.dtos.TelescopeResponseDto;
 import com.it.telescopeplatform.telescope.models.Telescope;
@@ -13,11 +14,28 @@ public class TelescopeMapper {
                 if (telescope == null)
                         return null;
 
-                List<String> imageUrls = telescope.getImages() != null
-                                ? telescope.getImages().stream()
-                                                .map(Image::getImageUrl)
-                                                .collect(Collectors.toList())
-                                : List.of();
+                List<ImageResponseDto> imageDtos = telescope.getImages() == null
+                                ? List.of()
+                                : telescope.getImages().stream()
+                                .map(img -> ImageResponseDto.builder()
+                                        .id(img.getId())
+                                        .url(img.getImageUrl())
+                                        .build())
+                                        .collect(Collectors.toList());
+
+                List<ReviewResponseDto> reviewDtos = telescope.getReviews() == null
+                                ? List.of()
+                                : telescope.getReviews().stream()
+                                        .map(r -> ReviewResponseDto.builder()
+                                        .id(r.getId())
+                                        .reviewText(r.getReviewText())
+                                        .rating(r.getRating())
+                                        .userId(r.getUser().getId())
+                                        .userFullName(r.getUser().getFullName())
+                                        .username(r.getUser().getUsername())
+                                        .userEmail(r.getUser().getEmail())
+                                        .build())
+                                        .collect(Collectors.toList());
 
                 var avgRating = telescope.getReviews() != null && !telescope.getReviews().isEmpty()
                                 ? telescope.getReviews().stream()
@@ -35,11 +53,12 @@ public class TelescopeMapper {
                                 .aperture(telescope.getAperture())
                                 .pricePerDay(telescope.getPricePerDay())
                                 .available(telescope.getAvailable())
-                                .imageUrls(imageUrls)
-                                .publisherName(telescope.getPublisher() != null ? telescope.getPublisher().getName()
+                                .images(imageDtos)
+                                .publisherId(telescope.getPublisher() != null ? telescope.getPublisher().getId()
                                                 : null)
                                 .averageRating(avgRating)
                                 .createdAt(telescope.getCreatedAt())
+                                .reviews(reviewDtos)
                                 .build();
         }
 
